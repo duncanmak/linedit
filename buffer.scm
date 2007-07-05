@@ -1,3 +1,10 @@
+;;; -*- Mode: Scheme; scheme48-package: linedit -*-
+;;;
+;;; buffer.scm: Buffer abstraction
+;;;
+;;; Copyright © 2007 Duncan Mak <duncan@ccs.neu.edu>
+;;;
+
 (define (make-buffer) (make-vector 3 (list)))
 (define (%buffer-prev buf) (vector-ref buf 0))
 (define (%buffer-next buf) (vector-ref buf 1))

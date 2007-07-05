@@ -1,4 +1,4 @@
-;;; -*- Mode: Scheme; scheme48-package: terminfo -*-
+;;; -*- Mode: Scheme; scheme48-package: linedit -*-
 ;;;
 ;;; terminal.scm: Terminal abstraction
 ;;;
