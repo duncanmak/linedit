@@ -8,5 +8,17 @@
           set-input-terminal-mode))
 
 (define-structure terminal-mode terminal-mode-interface
-  (open enumerated fluids let-opt scheme-with-scsh)
+  (open scheme-with-scsh enumerated fluids let-opt)
   (files terminal-mode))
+
+(define-interface keychord-interface
+  (export make-keychord
+          key-modifier->string
+          keychord->string
+          keychord
+          keychord?
+          keychord=?))
+
+(define-structure keychord keychord-interface
+  (open srfi-1 srfi-6 srfi-9 srfi-13 let-opt scheme-with-scsh)
+  (files keychord))
