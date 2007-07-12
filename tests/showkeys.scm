@@ -1,0 +1,10 @@
+(with-current-input-terminal-mode 'raw
+  (let loop ()
+    (let* ((c  (read-char))
+           (kc (keychord c)))
+      (display "You typed: ")
+      (display (keychord->string kc))
+      (newline)
+      (if (char=? c #\q)
+          (display "bye bye now\n")
+          (loop)))))
