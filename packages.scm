@@ -13,12 +13,16 @@
 
 (define-interface keychord-interface
   (export make-keychord
-          key-modifier->string
+          get-keychord
           keychord->string
+          string->keychord
           keychord
           keychord?
-          keychord=?))
+          keychord=?
+          keychord:key
+          keychord:control-down?
+          keychord:meta-down?))
 
 (define-structure keychord keychord-interface
-  (open srfi-1 srfi-6 srfi-9 srfi-13 let-opt scheme-with-scsh)
+  (open srfi-1 srfi-6 srfi-9 srfi-13 formats let-opt scheme-with-scsh)
   (files keychord))

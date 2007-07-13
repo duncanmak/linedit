@@ -1,20 +1,3 @@
-(define key-modifiers
-  '((Meta    "M")
-    (Control "C")
-    (Super   "S")
-    (Hyper   "H")))
-
-(define (key-modifier->string mod)
-  (second (assoc mod key-modifiers)))
-
-(define (string->key-modifier s)
-  (let loop ((keys key-modifiers))
-    (let* ((pair (first keys))
-           (str  (second pair)))
-      (if (string=? str s)
-          (first pair)
-          (loop (cdr keys))))))
-
 (define-record-type keychord
   (%make-keychord key control? meta?)
   keychord?
@@ -34,12 +17,15 @@
    ((char-letter+digit? c) c)
    ((char-iso-control?  c) (ascii->char (+ 96 (char->ascii c))))))
 
-(define (meta-pressed? n) #f)
+(define (meta-pressed? n meta)
+  (or meta
+      (not (zero? (bitwise-and #x80 n)))))
 
-(define (keychord c)
-  (make-keychord (char->key c)
-                 (char-iso-control? c)
-                 (meta-pressed? c)))
+(define (keychord c . args)
+  (let-optionals args ((meta #f))
+    (make-keychord (char->key c)
+                   (char-iso-control? c)
+                   (meta-pressed? (char->ascii c) meta))))
 
 (define (keychord=? chord1 chord2)
   (if (not (and (keychord? chord1)
@@ -69,3 +55,10 @@
     (make-keychord key
                    (string-contains mods "C")
                    (string-contains mods "M"))))
+
+(define (get-keychord . args)
+  (let-optionals args ((port (current-input-port)))
+    (let ((c (read-char port)))
+      (if (char=? (ascii->char 27) c)
+          (keychord (read-char) #t)
+          (keychord c)))))
