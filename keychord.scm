@@ -13,9 +13,9 @@
         (%make-keychord key control-down meta-down))))
 
 (define (char->key c)
-  (cond
-   ((char-letter+digit? c) c)
-   ((char-iso-control?  c) (ascii->char (+ 96 (char->ascii c))))))
+  (if (char-iso-control? c)
+      (ascii->char (+ 96 (char->ascii c)))
+      c))
 
 (define (meta-pressed? n meta)
   (or meta
