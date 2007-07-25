@@ -19,14 +19,15 @@
     (case mode
       ((cooked) (set-tty-info/now port (input-terminal-cooked-mode)))
       ((raw)    (set-tty-info/now port (input-terminal-raw-mode)))
-      (else     (error "This is not a valid terminal mode: " mode)))))
+      (else     (set-tty-info/now port mode)))))
 
 (define (call-with-input-terminal-mode mode thunk . args)
   (let-optionals args ((port (current-input-port)))
     (let ((orig (tty-info port)))
-     (set-input-terminal-mode mode port)
-     (thunk)
-     (set-tty-info/now port orig))))
+     (dynamic-wind
+       (lambda () (set-input-terminal-mode mode port))
+       thunk
+       (lambda () (set-input-terminal-mode orig port))))))
 
 (define-syntax with-input-terminal-mode
   (syntax-rules ()

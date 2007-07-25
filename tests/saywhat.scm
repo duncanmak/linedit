@@ -1,5 +1,3 @@
 (setup-terminal)
-(let ((line (make-line)))
-  (display "Say what? ")
-  (read-line line)
-  (format #t "You said: ~A~%" (line->string line)))
+(display "Say what? ")
+(format #t "You said: ~A~%" (read-line))
