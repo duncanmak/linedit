@@ -23,13 +23,12 @@
                    (list->string (line:right l))))))
 
 (define (process-line . args)
-  (let-optionals args ((buf  (make-line))
-                       (port (current-input-port)))
-    (with-input-terminal-mode port 'raw
-      (let loop ((char (read-char port))
+  (let-optionals args ((buf  (make-line)))
+    (with-current-input-terminal-mode 'raw
+      (let loop ((char (read-char))
                  (line buf))
         (let ((result (process char line)))
           (if (char=? char cr)
               (line->string result)
-              (loop (read-char port)
+              (loop (read-char)
                     result)))))))
