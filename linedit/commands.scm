@@ -1,7 +1,9 @@
 ;;; -*- Mode: Scheme; scheme48-package: linedit -*-
 
 (define (insert-char k l)
+  (tputs (enter-insert-mode))
   (display k)
+  (tputs (exit-insert-mode))
   (make-line (cons k (line:left l))
              (line:right l)))
 
@@ -22,11 +24,13 @@
                         (cdr (line:right l))))))
 
 (define (move-beginning-of-line k l)
-  (tputs (clr-bol))
+  (tputs (column-address 0))
   (make-line '() (reverse (line:left l))))
 
 (define (move-end-of-line k l)
-  (tputs (clr-eol))
+  (let ((len (+ 1o (length (line:left  l))
+                (length (line:right l)))))
+    (tputs (column-address len)))
   (make-line (append (reverse (line:right l)) (line:left l)) '()))
 
 (define (backward-char k l)
@@ -46,5 +50,5 @@
                    (cdr (line:right l))))))
 
 (define (kill-line k l)
-  (tputs (delete-line))
-  (make-line))
+  (tputs (clr-eol))
+  (make-line (line:left l) '()))
