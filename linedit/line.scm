@@ -11,13 +11,25 @@
                        (right '()))
     (%make-line left right)))
 
-(define (read-line . args)
-  (let-optionals args ((line (make-line))
+(define (line->string l)
+  (cond
+   ((not (line? l))
+    "Not a line")
+   ((and (null? (line:left l))
+         (null? (line:right l)))
+    "Empty line")
+   (else
+    (string-append (reverse-list->string (line:left l))
+                   (list->string (line:right l))))))
+
+(define (process-line . args)
+  (let-optionals args ((buf  (make-line))
                        (port (current-input-port)))
-    (with-current-input-terminal-mode 'raw
-      (let loop ((key  (read-char port))
-                 (line (process-input key line)))
-        (if (char=? key #\newline)
-            line
-            (loop (read-char port)
-                  (process-input key line)))))))
+    (with-input-terminal-mode port 'raw
+      (let loop ((char (read-char port))
+                 (line buf))
+        (let ((result (process char line)))
+          (if (char=? char cr)
+              (line->string result)
+              (loop (read-char port)
+                    result)))))))

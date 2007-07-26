@@ -6,7 +6,6 @@
              (line:right l)))
 
 (define (delete-backward-char k l)
-  (display "delete-backward-char\n")
   (if (null? (line:left l))
       l
       (begin (tputs (cursor-left))
@@ -47,6 +46,5 @@
                    (cdr (line:right l))))))
 
 (define (kill-line k l)
+  (tputs (delete-line))
   (make-line))
-
-(define (no-op k l) '())
