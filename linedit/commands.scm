@@ -18,8 +18,7 @@
 (define (delete-char k l)
   (if (null? (line:right l))
       l
-      (begin (tputs (cursor-right))
-             (tputs (delete-character))
+      (begin (tputs (delete-character))
              (make-line (line:left l)
                         (cdr (line:right l))))))
 
