@@ -28,7 +28,7 @@
   (make-line '() (reverse (line:left l))))
 
 (define (move-end-of-line k l)
-  (let ((len (+ 1o (length (line:left  l))
+  (let ((len (+ 1 (length (line:left  l))
                 (length (line:right l)))))
     (tputs (column-address len)))
   (make-line (append (reverse (line:right l)) (line:left l)) '()))
