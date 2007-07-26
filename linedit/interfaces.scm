@@ -2,6 +2,7 @@
 
 (define-interface commands-interface
   (export ((define-key) :syntax)
+          initialize-keymaps
           insert-char
           delete-backward-char
           delete-char
@@ -11,21 +12,22 @@
           forward-char
           kill-line))
 
-(define-interface keymap-interface
-  (export lookup
-          global-key-map
-          meta-key-map))
-
 (define-interface line-interface
   (export make-line
           line:left
           line:right
-          line->string))
+          line->string
+          line?))
 
-(define-interface keyboard-input-interface
-  (export key
-          process-input
-          read-line))
+(define-interface keyboard-interface
+  (export kbd
+          ff cr esc del bksp
+          process-line))
+
+(define-interface keymap-interface
+  (export global-keymap
+          meta-keymap
+          process))
 
 (define-interface terminal-mode-interface
   (export ((with-current-input-terminal-mode) :syntax)
@@ -34,6 +36,13 @@
           input-terminal-mode
           set-input-terminal-mode))
 
+(define-interface misc-interface
+  (export sane print-table))
 
 (define-interface linedit-interface
-  (compound-interface commands-interface line-interface terminal-mode-interface keyboard-input-interface))
+  (compound-interface commands-interface
+                      line-interface
+                      keyboard-interface
+                      keymap-interface
+                      misc-interface
+                      terminal-mode-interface))
