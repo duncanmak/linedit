@@ -16,10 +16,12 @@
 
 (define (set-input-terminal-mode mode . args)
   (let-optionals args ((port (current-input-port)))
-    (case mode
-      ((cooked) (set-tty-info/now port (input-terminal-cooked-mode)))
-      ((raw)    (set-tty-info/now port (input-terminal-raw-mode)))
-      (else     (set-tty-info/now port mode)))))
+    (if (tty-info? mode)
+        (set-tty-info/now port mode)
+        (case mode
+          ((cooked) (set-tty-info/now port (input-terminal-cooked-mode)))
+          ((raw)    (set-tty-info/now port (input-terminal-raw-mode)))
+          (else     (format #t "~A is not a valid mode" mode))))))
 
 (define (call-with-input-terminal-mode mode thunk . args)
   (let-optionals args ((port (current-input-port)))
@@ -42,7 +44,7 @@
          (lambda () body ...)))))
 
 (define (input-terminal-cooked-mode)
-  (make-tty-info 27906 5 1215 35387 'extb 'extb 1 0))
+  (make-tty-info 25862 5 1215 35387 'extb 'extb 1 0))
 
 (define (input-terminal-raw-mode)
   (let* ((info   (input-terminal-cooked-mode))
