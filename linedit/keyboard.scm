@@ -9,8 +9,7 @@
 
 (define (kbd s)
   (cond
-    ((string=? s "<backspace>") bksp)
-    ((string=? s "<delete>") del)
+    ((string=? s "<backspace>") del)
     ((string=? s "RET") cr)
     ((string=? s "ESC") esc)
     (else
