@@ -24,10 +24,10 @@
 (define (call-with-input-terminal-mode mode thunk . args)
   (let-optionals args ((port (current-input-port)))
     (let ((orig (tty-info port)))
-     (dynamic-wind
-       (lambda () (set-input-terminal-mode mode port))
-       thunk
-       (lambda () (set-input-terminal-mode orig port))))))
+      (dynamic-wind
+        (lambda () (set-input-terminal-mode mode port))
+        thunk
+        (lambda () (set-input-terminal-mode orig port))))))
 
 (define-syntax with-input-terminal-mode
   (syntax-rules ()
@@ -41,10 +41,11 @@
      (call-with-input-terminal-mode mode
          (lambda () body ...)))))
 
-(define input-terminal-cooked-mode (tty-info (current-input-port)))
+(define (input-terminal-cooked-mode)
+  (make-tty-info 27906 5 1215 35387 'extb 'extb 1 0))
 
 (define (input-terminal-raw-mode)
-  (let* ((info   input-terminal-cooked-mode)
+  (let* ((info   (input-terminal-cooked-mode))
          (ispeed (tty-info:input-speed info))
          (ospeed (tty-info:output-speed info))
          (min    1)
