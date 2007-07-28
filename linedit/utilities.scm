@@ -15,6 +15,12 @@
    (lambda (k v) (format #t "Key: ~A Value: ~A~%" k v))
    table))
 
+(define (show-keybinding keyseq)
+  (cond
+   ((table-ref global-keymap (char->ascii (kbd keyseq))) =>
+    (lambda (command) (display command) (newline)))
+   (else (format #t "~A is not bound to any command~%" keyseq))))
+
 ;; (define-syntax string-case
 ;;   (syntax-rules (=>)
 ;;     ((_ s ((key) (value)) ...)

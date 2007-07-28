@@ -37,7 +37,7 @@
           set-input-terminal-mode))
 
 (define-interface misc-interface
-  (export sane print-table))
+  (export sane print-table show-keybinding))
 
 (define-interface linedit-interface
   (compound-interface commands-interface
