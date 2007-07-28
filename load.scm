@@ -9,3 +9,4 @@
 
 (open 'terminfo)
 (open 'linedit)
+(load "tests/saywhat.scm")
