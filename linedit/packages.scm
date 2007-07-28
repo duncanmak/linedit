@@ -1,7 +1,7 @@
 ;;; -*- Mode: Scheme; scheme48-package: linedit -*-
 
 (define-structure commands commands-interface
-  (open srfi-13 srfi-14 line keyboard keymap terminfo scheme-with-scsh tables)
+  (open srfi-13 srfi-14 let-opt line keyboard keymap terminfo scheme-with-scsh tables)
   (files commands keybindings))
 
 (define-structure line line-interface

@@ -1,5 +1,11 @@
 ;;; -*- Mode: Scheme; scheme48-package: linedit -*-
 
+(define (lookup-meta-keymap k l)
+  (process k l meta-keymap))
+
+(define (show-newline k l)
+  (newline) (display cr) l)
+
 (define (insert-char k l)
   (tputs (enter-insert-mode))
   (display k)
