@@ -17,6 +17,15 @@
           line:left
           line:right
           line->string
+          next-char
+          prev-char
+          shift-left
+          shift-right
+          beginning-of-line
+          end-of-line
+          line-length
+          line-insert
+          line-remove
           line?))
 
 (define-interface keyboard-interface
