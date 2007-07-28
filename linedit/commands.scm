@@ -17,7 +17,7 @@
       l
       (begin (tputs (cursor-left))
              (tputs (delete-character))
-             (line-remove l k))))
+             (shift-left l))))
 
 (define (delete-char k l)
   (if (null? (line:right l))

@@ -25,7 +25,6 @@
           end-of-line
           line-length
           line-insert
-          line-remove
           line?))
 
 (define-interface keyboard-interface

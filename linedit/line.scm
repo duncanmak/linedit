@@ -32,10 +32,6 @@
   (make-line (cons char (line:left l))
              (line:right l)))
 
-(define (line-remove l char)
-  (make-line (cdr (line:left l))
-             (line:right l)))
-
 (define (shift-left l . chars)
   (make-line (cdr (line:left l))
              (append chars (line:right l))))
