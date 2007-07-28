@@ -8,4 +8,4 @@
     (cond
      ((table-ref keymap (char->ascii key)) =>
       (lambda (command)
-        (command key line))))))
+        (command line key))))))
