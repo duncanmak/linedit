@@ -17,7 +17,7 @@
 
 (define (show-keybinding keyseq)
   (cond
-   ((table-ref global-keymap (char->ascii (kbd keyseq))) =>
+   ((lookup-key global-keymap (kbd keyseq)) =>
     (lambda (command) (display command) (newline)))
    (else (format #t "~A is not bound to any command~%" keyseq))))
 

@@ -35,6 +35,7 @@
 (define-interface keymap-interface
   (export global-keymap
           meta-keymap
+          lookup-key
           process))
 
 (define-interface terminal-mode-interface

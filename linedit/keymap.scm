@@ -6,6 +6,9 @@
 (define (process key line . args)
   (let-optionals args ((keymap global-keymap))
     (cond
-     ((table-ref keymap (char->ascii key)) =>
+     ((lookup-key keymap key) =>
       (lambda (command)
         (command line key))))))
+
+(define (lookup-key keymap key)
+  (table-ref keymap (char->ascii key)))

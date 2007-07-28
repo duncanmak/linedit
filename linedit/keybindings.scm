@@ -4,7 +4,7 @@
     (for-each
      (lambda (keymap)
        (char-set-for-each
-        (lambda (c) (table-set! keymap (char->ascii c) insert-char))
+        (lambda (k) (define-key keymap k insert-char))
         (char-set-union char-set:graphic
                         char-set:blank)))
      keymaps)))
