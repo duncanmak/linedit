@@ -17,6 +17,7 @@
   (export make-line
           line:left
           line:right
+          line->port
           line->string
           string->line
           get-char

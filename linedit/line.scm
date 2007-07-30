@@ -27,25 +27,29 @@
 (define-record-type line
   (%make-line left right)
   line?
-  (left   line:left  line:set-left!)
-  (right  line:right line:set-right!))
+  (left   line:left)
+  (right  line:right))
 
 (define (make-line . args)
   (let-optionals args ((left  '())
                        (right '()))
     (%make-line left right)))
 
-(define (line->string l)
-  (cond
-   ((not (line? l))
-    "Not a line")
-   ((and (null? (line:left l))
-         (null? (line:right l)))
-    "Empty line")
-   (else
-    (string-append (reverse-list->string (line:left l))
-                   "^"
-                   (list->string (line:right l))))))
+(define (line->string l . flag)
+  (let-optionals flag ((show-cursor #f))
+    (if (line? l)
+        (string-append (reverse-list->string (line:left l))
+                       (if show-cursor "^" "")
+                       (list->string (line:right l)))
+        "")))
+
+(define (line->port l)
+  (let ((s (line->string l)))
+    (open-input-string
+     (if (and (= 1 (string-length s))
+              (eof-object? (string-ref s 0)))
+         ""
+         s))))
 
 (define (string->line s)
   (if (not (string-contains s "^"))

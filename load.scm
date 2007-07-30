@@ -9,4 +9,7 @@
 
 (open 'terminfo)
 (open 'linedit)
+(load "tests/showkeys.scm")
 (load "tests/saywhat.scm")
+(config '(load "tests/repl.scm"))
+(open 'repl)
