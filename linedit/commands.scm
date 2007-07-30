@@ -1,8 +1,5 @@
 ;;; -*- Mode: Scheme; scheme48-package: linedit -*-
 
-(define (lookup-meta-keymap l k)
-  (process k l meta-keymap))
-
 (define (show-newline l . k)
   (newline) (display cr) l)
 
@@ -37,14 +34,37 @@
   (if (null? (line:left l))
       l
       (begin (tputs (cursor-left))
-             (shift-left l (prev-char l)))))
+             (shift-left l (get-char l line:left)))))
 
 (define (forward-char l . k)
   (if (null? (line:right l))
       l
       (begin (tputs (cursor-right))
-             (shift-right l (next-char l)))))
+             (shift-right l (get-char l line:right)))))
 
 (define (kill-line l . k)
   (tputs (clr-eol))
   (make-line (line:left l) '()))
+
+(define (move-word l direction action)
+  (let loop ((line l)
+             (skip-space #t))
+    (let ((c (get-char line direction)))
+      (cond
+       ((null? c) line)
+       ((char-letter? c) (loop (action line) #f))
+       ((and skip-space
+             (char=? #\space c)) (loop (action line) #t))
+       (else line)))))
+
+(define (backward-word l . k)
+  (move-word l line:left backward-char))
+
+(define (forward-word l . k)
+  (move-word l line:right forward-char))
+
+(define (kill-word l . k)
+  (move-word l line:right delete-char))
+
+(define (backward-kill-word l . k)
+  (move-word l line:left delete-backward-char))

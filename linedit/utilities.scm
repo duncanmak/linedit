@@ -13,13 +13,20 @@
 (define (print-table table)
   (table-walk
    (lambda (k v) (format #t "Key: ~A Value: ~A~%" k v))
-   table))
+   table)
+  table)
 
 (define (show-keybinding keyseq)
   (cond
-   ((lookup-key global-keymap (kbd keyseq)) =>
+   ((table-ref global-keymap (kbd keyseq)) =>
     (lambda (command) (display command) (newline)))
    (else (format #t "~A is not bound to any command~%" keyseq))))
+
+(define show-output #t)
+(define (set-output! flag) (set! show-output flag))
+
+(define (tputs s . params)
+  (if show-output (ti:tputs s params)))
 
 ;; (define-syntax string-case
 ;;   (syntax-rules (=>)

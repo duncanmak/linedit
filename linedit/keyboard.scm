@@ -1,4 +1,4 @@
-;;; -*- Mode: Scheme; scheme48-package: linedit -*-
+;;; -*- Mode: Scheme; scheme48-package: keyboard -*-
 
 ;;; predefined-keys
 (define ff   (ascii->char  12))
@@ -9,16 +9,47 @@
 
 (define (kbd s)
   (cond
-    ((string=? s "<backspace>") del)
-    ((string=? s "RET") cr)
-    ((string=? s "ESC") esc)
-    (else
-     (let* ((len  (string-length s))
-            (idx  (string-index-right s #\-))
-            (key  (if idx (substring s (+ 1 idx) len) s))
-            (mods (if idx (substring s 0 idx) ""))
-            (c    (string-ref key 0)))
-       (if (string-contains mods "C")
-           (ascii->char (- (char->ascii (char-downcase c)) 96))
-           c)))))
+   ((char? s)
+    (char->ascii s))
+   ((= 1 (string-length s))
+    (kbd (string-ref s 0)))
+   (else
+    (let* ((split     (infix-splitter "-"))
+           (all-keys  (split s))
+           (key       (car (reverse all-keys)))
+           (modifiers (cdr (reverse all-keys))))
+      (let loop ((result   '())
+                 (keys     modifiers)
+                 (add-key #t))
+        (cond
+         ((null? keys)
+          (if add-key
+              (append result (key->value key))
+              result))
+         ((member "M" keys)
+          (loop (cons (char->ascii esc) result)
+                (delete "M" keys)
+                add-key))
+         ((member "C" keys)
+          (loop (cons (key->control-character key) result)
+                (delete "C" keys)
+                #f))))))))
 
+(define (key->value k)
+  (let ((len (string-length k)))
+    (map
+     char->ascii
+     (cond
+      ((= len 1) (list (string-ref k 0)))
+      ((string=? k "<backspace>") (list del))
+      ((string=? k "<left>") (string->list (key-sleft)))
+      ((string=? k "<right>") (string->list (key-sright)))
+      ((string=? k "RET") (list cr))
+      ((string=? k "ESC") (list esc))
+      (else (error "this is invalid " k))))))
+
+(define (key->control-character k)
+  (if (not (= 1 (string-length k)))
+      (key->value k)
+      (let ((c (string-ref k 0)))
+        (- (char->ascii (char-downcase c)) (char->ascii #\`)))))

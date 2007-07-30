@@ -1,6 +1,4 @@
 (define (saywhat)
-  (setup-terminal)
-  (initialize-keymaps)
   (display "Say what? ")
   (newline)
   (let ((line (process-line (make-line))))
