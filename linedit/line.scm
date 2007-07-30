@@ -1,4 +1,28 @@
 ;;; -*- Mode: Scheme; scheme48-package: line -*-
+;;;
+;;; Copyright © 2007 Duncan Mak <duncan@ccs.neu.edu>
+;;;
+;;; This code is placed in the Public Domain.  All warranties are
+;;; disclaimed.
+;;;
+;;; Line abstraction
+;;;
+;;; The 'line' record implements a gap buffer. It is the workhorse and
+;;; main data structure of linedit. It contains two fields: left and
+;;; right. Data to the left of the gap are in reverse order, data to
+;;; the right of the gap is in normal order.
+;;;
+;;; To make a new line from a string, use
+;;;       STRING->LINE s
+;;;
+;;; Use '^' to denote the placement of the gap.
+;;;
+;;; To view a line as a string, use
+;;;       LINE->STRING l
+;;;
+;;; Various helper functions are also defined here to aid the
+;;; implementation of Commands.
+;;;
 
 (define-record-type line
   (%make-line left right)
@@ -42,9 +66,9 @@
   (make-line (cons char (line:left l))
              (line:right l)))
 
-(define (shift-left l . chars)
+(define (shift-left l . char)
   (make-line (cdr (line:left l))
-             (append chars (line:right l))))
+             (append char (line:right l))))
 
 (define (shift-right l . char)
   (make-line (append char (line:left l))

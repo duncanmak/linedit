@@ -1,4 +1,29 @@
-;;; -*- Mode: Scheme; scheme48-package: linedit -*-
+;;; -*- Mode: Scheme; scheme48-package: commands -*-
+;;;
+;;; Copyright © 2007 Duncan Mak <duncan@ccs.neu.edu>
+;;;
+;;; This code is placed in the Public Domain.  All warranties are
+;;; disclaimed.
+;;;
+;;; Linedit Commands
+;;;
+;;; This file contains the commands used by linedit.
+;;;
+;;; All commands take the form
+;;;
+;;;        command line [key]
+;;;
+;;; and return a new line.
+;;;
+;;; While the 'key' argument is optional, it cannot be omitted
+;;; entirely. Commands that do not make use of the key argument should
+;;; be defined in this form:
+;;;
+;;;        (define (command-that-discards-key line . key))
+;;;
+;;; This allows callers of the command to pass only the 'line'
+;;; argument, but preserves the command interface.
+;;;
 
 (define (show-newline l . k)
   (newline) (display cr) l)

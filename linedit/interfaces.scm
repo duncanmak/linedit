@@ -26,12 +26,12 @@
           end-of-line
           line-length
           line-insert
-          line?))
+          line?
+          process-line))
 
 (define-interface keyboard-interface
   (export kbd
-          ff cr esc del bksp
-          process-line))
+          ff cr esc del bksp))
 
 (define-interface keymap-interface
   (export define-key

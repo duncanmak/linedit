@@ -12,7 +12,7 @@
 
 (define-structure keyboard keyboard-interface
   (open scheme-with-scsh srfi-1 srfi-9 srfi-13 let-opt keymap table terminfo terminal-mode)
-  (files keyboard line))
+  (files keyboard))
 
 (define-structure keymap keymap-interface
   (open scheme-with-scsh let-opt tables)

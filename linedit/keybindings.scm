@@ -1,4 +1,4 @@
-;;; -*- Mode: Scheme; scheme48-package: linedit -*-
+;;; -*- Mode: Scheme; scheme48-package: commands -*-
 (define (initialize-keymaps . args)
   (setup-terminal)
   (let-optionals args ((keymaps (list global-keymap)))

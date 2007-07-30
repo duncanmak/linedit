@@ -1,11 +1,40 @@
 ;;; -*- Mode: Scheme; scheme48-package: keymap -*-
+;;;
+;;; Copyright © 2007 Duncan Mak <duncan@ccs.neu.edu>
+;;;
+;;; This code is placed in the Public Domain.  All warranties are
+;;; disclaimed.
+;;;
+;;; Keymap
+;;;
+;;; The linedit keymap is implemented using an integer table. The
+;;; initial key to global-keymap must be an integer. In the simple
+;;; case, the global-keymap maps an integer key to a Command; for
+;;; more complicated key sequences, each integer key in the sequence
+;;; is mapped to it own table, which ultimately must end in a Command.
+;;;
+;;; To facilitate dealing with the keymap, three operations are defined:
+;;;
+;;; DEFINE-KEY keymap key command -> assigns command to key in keymap.
+;;;
+;;; LOOKUP-KEY key [keymap] -> looks up the value of key in keymap. If
+;;; no keymap is supplied, the global-keymap is used.
+;;;
+;;; PROCESS key line [keymap] -> Uses LOOK-UP to find the appropriate
+;;; Command and calls it with key and line.
+;;;
+;;; For all three operations, key could either be a single integer,
+;;; e.g. 42 , or a list of integers, e.g. '(1 2 3 4). Note: the
+;;; KBD function can be used to translate textual descriptions of key
+;;; sequences into a form consumable by the keymap.
+;;;
 
 (define global-keymap (make-integer-table))
 
 (define (lookup-key key . args)
   (let-optionals args ((keymap global-keymap))
     (cond
-     ((number? key) (table-ref keymap key))
+     ((integer? key) (table-ref keymap key))
      ((list? key)
       (if (null? (cdr key))
           (lookup-key (car key) keymap)
@@ -25,8 +54,8 @@
 (define (define-key keymap k v)
   (cond
    ((not (table? keymap))
-    (error "keymap is invalid"))
-   ((number? k)
+    (error "keymap is invalid" keymap))
+   ((integer? k)
     (table-set! keymap k v))
    ((list? k)
     (if (null? (cdr k))
@@ -37,5 +66,5 @@
               (begin (table-set! keymap key (make-integer-table))
                      (define-key (table-ref keymap key) (cdr k) v))
               (define-key val (cdr k) v)))))
-   (else (error "key must be either be a number or a list of numbers" k))))
+   (else (error "key must be either be an integer or a list of integers" k))))
 
