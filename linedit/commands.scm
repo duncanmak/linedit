@@ -29,16 +29,16 @@
   (newline) (display cr) l)
 
 (define (insert-char l k)
-  (tputs (enter-insert-mode))
-  (display k)
-  (tputs (exit-insert-mode))
+  (tputs (enter-insert-mode)
+         (string k)
+         (exit-insert-mode))
   (line-insert l k))
 
 (define (delete-backward-char l . k)
   (if (null? (line:left l))
       l
-      (begin (tputs (cursor-left))
-             (tputs (delete-character))
+      (begin (tputs (cursor-left)
+                    (delete-character))
              (shift-left l))))
 
 (define (delete-char l . k)
@@ -93,3 +93,5 @@
 
 (define (backward-kill-word l . k)
   (move-word l line:left delete-backward-char))
+
+

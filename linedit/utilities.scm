@@ -25,11 +25,6 @@
 (define show-output #t)
 (define (set-output! flag) (set! show-output flag))
 
-(define (tputs s . params)
-  (if show-output (ti:tputs s params)))
-
-;; (define-syntax string-case
-;;   (syntax-rules (=>)
-;;     ((_ s ((key) (value)) ...)
-;;      ()
-;;      )))
+(define (tputs . s)
+  (if show-output
+      (for-each (lambda (i) (ti:tputs i)) s)))
