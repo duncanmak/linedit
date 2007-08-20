@@ -19,7 +19,7 @@
   (files keymap))
 
 (define-structure line line-interface
-  (open srfi-6 srfi-9 srfi-13 scheme-with-scsh let-opt keyboard keymap terminal-mode)
+  (open srfi-6 srfi-9 srfi-13 scheme-with-scsh define-record-types let-opt keyboard keymap terminal-mode)
   (files line))
 
 (define-structure terminal-mode terminal-mode-interface

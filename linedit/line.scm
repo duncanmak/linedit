@@ -27,8 +27,12 @@
 (define-record-type line
   (%make-line left right)
   line?
-  (left   line:left)
-  (right  line:right))
+  (left  line:left)
+  (right line:right))
+
+(define-record-discloser line
+  (lambda (l)
+    `(Line ,(line->string l #t))))
 
 (define (make-line . args)
   (let-optionals args ((left  '())
