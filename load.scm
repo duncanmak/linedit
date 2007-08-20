@@ -1,15 +1,29 @@
 ;;; -*- Mode: Scheme; scheme48-package: (exec) -*-
 ;;;
-;;; ,config ,load terminfo/packages.scm linedit/interfaces.scm linedit/packages.scm
+;;; Copyright © 2007 Duncan Mak <duncan@ccs.neu.edu>
 ;;;
+;;; This code is placed in the Public Domain.  All warranties are
+;;; disclaimed.
+;;;
+;;; load.scm - Script for loading linedit
+;;;
+
 (user)
-(config '(load "terminfo/packages.scm"
-               "linedit/interfaces.scm"
-               "linedit/packages.scm"))
+(let ((source-directory "/home/duncan/git/linedit"))
+  (translate "=terminfo/" (string-append source-directory "/terminfo/"))
+  (translate "=linedit/"  (string-append source-directory "/linedit/"))
+  (translate "=tests/"    (string-append source-directory "/tests/")))
+
+(config '(load "=terminfo/packages.scm"
+               "=linedit/interfaces.scm"
+               "=linedit/packages.scm"
+               "=tests/repl.scm"))
 
 (open 'terminfo)
 (open 'linedit)
-(load "tests/showkeys.scm")
-(load "tests/saywhat.scm")
-(config '(load "tests/repl.scm"))
 (open 'repl)
+
+;;; Misc
+(load "=tests/showkeys.scm"
+      "=tests/saywhat.scm")
+
