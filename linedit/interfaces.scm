@@ -48,7 +48,7 @@
           set-input-terminal-mode))
 
 (define-interface helpers-interface
-  (export print-table sane set-output! show-keybinding tputs))
+    (export 1+ 1- print-table sane tputs))
 
 (define-interface linedit-interface
   (compound-interface commands-interface
