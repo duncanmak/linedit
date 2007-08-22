@@ -14,7 +14,7 @@
         (newline)))
 
     (define (repl)
-      (define-key global-keymap (kbd "C-x") quit)
+      (define-key global-keymap (control #\x) quit)
       (let loop ()
         (if continue
             (let ((env (scheme-report-environment 5)))

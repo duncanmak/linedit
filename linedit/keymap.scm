@@ -23,11 +23,6 @@
 ;;; PROCESS key line [keymap] -> Uses LOOK-UP to find the appropriate
 ;;; Command and calls it with key and line.
 ;;;
-;;; For all three operations, key could either be a single integer,
-;;; e.g. 42 , or a list of integers, e.g. '(1 2 3 4). Note: the
-;;; KBD function can be used to translate textual descriptions of key
-;;; sequences into a form consumable by the keymap.
-;;;
 
 (define global-keymap (make-integer-table))
 
@@ -55,16 +50,22 @@
   (cond
    ((not (table? keymap))
     (error "keymap is invalid" keymap))
+   ((not (keystroke? k))
+    (error "this is not a keystroke"))
+   (else
+    (add-key keymap (keystroke-hash k) v))))
+
+(define (add-key keymap k v)
+  (cond
    ((integer? k)
     (table-set! keymap k v))
    ((list? k)
     (if (null? (cdr k))
-        (define-key keymap (car k) v)
+        (add-key keymap (car k) v)
         (let* ((key (car k))
                (val (table-ref keymap key)))
           (if (not val)
               (begin (table-set! keymap key (make-integer-table))
-                     (define-key (table-ref keymap key) (cdr k) v))
-              (define-key val (cdr k) v)))))
-   (else (error "key must be either be an integer or a list of integers" k))))
+                     (add-key (table-ref keymap key) (cdr k) v))
+              (add-key val (cdr k) v)))))))
 

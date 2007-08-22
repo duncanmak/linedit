@@ -1,7 +1,7 @@
 ;;; -*- Mode: Scheme; scheme48-package: (config) -*-
 
 (define-interface commands-interface
-  (export initialize-keymaps
+  (export initialize-keymap
           insert-char
           delete-backward-char
           delete-char
@@ -30,9 +30,12 @@
           line?
           process-line))
 
-(define-interface keyboard-interface
-  (export kbd
-          ff cr esc del bksp))
+(define-interface keystroke-interface
+  (export key
+          control
+          meta
+          keystroke-hash
+          keystroke?))
 
 (define-interface keymap-interface
   (export define-key
@@ -53,7 +56,7 @@
 (define-interface linedit-interface
   (compound-interface commands-interface
                       line-interface
-                      keyboard-interface
+                      keystroke-interface
                       keymap-interface
                       helpers-interface
                       terminal-mode-interface))
