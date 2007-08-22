@@ -1,8 +1,8 @@
 ;;; -*- Mode: Scheme; scheme48-package: (config) -*-
 
 (define-structure commands commands-interface
-  (open srfi-13 srfi-14 helpers let-opt line keystroke keymap
-        (modify terminfo (rename (tputs ti:tputs))) scheme-with-scsh tables)
+  (open srfi-13 srfi-14 conditions helpers let-opt line keystroke keymap
+        (modify terminfo (rename (tputs ti:tputs))) scheme-with-scsh signals tables)
   (files commands keybindings))
 
 (define-structure helpers helpers-interface
@@ -19,7 +19,8 @@
   (files keystroke))
 
 (define-structure line line-interface
-  (open srfi-6 srfi-9 srfi-13 scheme-with-scsh define-record-types let-opt keymap keystroke terminal-mode)
+  (open srfi-6 srfi-9 srfi-13 scheme-with-scsh conditions
+        define-record-types handle let-opt keymap keystroke terminal-mode)
   (files line))
 
 (define-structure terminal-mode terminal-mode-interface

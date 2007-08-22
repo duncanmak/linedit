@@ -58,12 +58,12 @@
 (define (string->line s)
   (if (not (string-contains s "^"))
       (make-line (reverse (string->list s)))
-   (let* ((split (infix-splitter "^"))
-          (line  (split s))
-          (left  (car  line))
-          (right (cadr line)))
-     (make-line (reverse (string->list left))
-                (string->list right)))))
+      (let* ((split (infix-splitter "^"))
+             (line  (split s))
+             (left  (car  line))
+             (right (cadr line)))
+        (make-line (reverse (string->list left))
+                   (string->list right)))))
 
 (define (get-char l direction)
   (if (null? (direction l))
@@ -98,8 +98,13 @@
   (with-current-input-terminal-mode 'raw
     (let loop ((c (read-char))
                (l line))
-      (let ((result (process c l)))
-        (if (char=? c cr)
-            result
+      (with-handler handler
+        (lambda ()
+          (let ((result (process c l)))
             (loop (read-char)
-                  result))))))
+                  result)))))))
+
+(define (handler condition next)
+  (if (interrupt? condition)
+      (condition-stuff condition)
+      (next)))

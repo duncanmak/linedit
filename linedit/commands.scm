@@ -26,7 +26,8 @@
 ;;;
 
 (define (show-newline l . k)
-  (newline) (display cr) l)
+  (newline)
+  (signal 'interrupt l))
 
 (define (insert-char l k)
   (tputs (enter-insert-mode)
@@ -78,8 +79,8 @@
       (cond
        ((null? c) line)
        ((char-letter? c) (loop (action line) #f))
-       ((and skip-space
-             (char=? #\space c)) (loop (action line) #t))
+       ((and (char-whitespace? c) skip-space)
+        (loop (action line) #t))
        (else line)))))
 
 (define (backward-word l . k)
@@ -93,5 +94,3 @@
 
 (define (backward-kill-word l . k)
   (move-word l line:left delete-backward-char))
-
-
