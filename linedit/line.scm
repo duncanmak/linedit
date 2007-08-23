@@ -43,6 +43,10 @@
   (lambda (l)
     `(Line ,(line->string l #t))))
 
+(define (line:length l)
+  (+ (length (line:left  l))
+     (length (line:right l))))
+
 (define (make-empty-line . args)
   (let-optionals args ((prompt-string ""))
     (make-line '() '() (+ 1 (string-length prompt-string)))))
@@ -105,10 +109,6 @@
   (copy-line l (append (reverse (line:right l))
                      (line:left l))
              '()))
-
-(define (line-length l)
-  (+ (length (line:left  l))
-     (length (line:right l))))
 
 (define (readline . args)
   (let-optionals args ((prompt-string ""))

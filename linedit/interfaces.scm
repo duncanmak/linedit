@@ -19,6 +19,7 @@
           line:left
           line:right
           line:column
+          line:length
           line->port
           line->string
           string->line
@@ -27,7 +28,6 @@
           shift-right
           beginning-of-line
           end-of-line
-          line-length
           line-insert
           line?
           readline))

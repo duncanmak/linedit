@@ -53,7 +53,7 @@
   (beginning-of-line l))
 
 (define (move-end-of-line l . k)
-  (tputs (column-address (+ (line:column l) (line-length l))))
+  (tputs (column-address (+ (line:column l) (line:length l))))
   (end-of-line l))
 
 (define (backward-char l . k)
