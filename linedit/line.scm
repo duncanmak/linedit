@@ -67,13 +67,14 @@
 
 (define (string->line s)
   (if (not (string-contains s "^"))
-      (make-line (reverse (string->list s)))
+      (make-line (reverse (string->list s)) '() 0)
       (let* ((split (infix-splitter "^"))
              (line  (split s))
              (left  (car  line))
              (right (cadr line)))
         (make-line (reverse (string->list left))
-                   (string->list right)))))
+                   (string->list right)
+                   0))))
 
 (define (get-char l direction)
   (if (null? (direction l))
