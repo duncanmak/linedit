@@ -16,10 +16,23 @@
   (%index  index  set-index!))
 
 (define-record-discloser ring-buffer
-  (lambda (b) `(Ring-buffer ,(items b))))
+  (lambda (b) `(Ring-buffer ,(rb-length b) ,(rb->list b))))
 
-(define (make-ring-buffer size)
-  (%make-ring-buffer (make-vector size) 0 0))
+(define (make-ring-buffer size . args)
+  (let-optionals args ((fill 0))
+    (%make-ring-buffer (make-vector size fill) 0 0)))
+
+(define (rb-length buffer) (vector-length (items buffer)))
+
+(define (rb->list buffer)
+  (let* ((current (cursor buffer))
+         (vec     (items buffer))
+         (length  (vector-length vec)))
+    (let loop ((i 0)
+               (results '()))
+      (cond ((>= i length) (reverse results))
+            ((= i current) (loop (+ 1 i) (cons (list (vector-ref vec i)) results)))
+            (else (loop (+ 1 i) (cons (vector-ref vec i) results)))))))
 
 (define (increment buffer accessor)
   (let ((current (+ 1 (accessor buffer)))

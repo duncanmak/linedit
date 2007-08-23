@@ -28,7 +28,7 @@
   (files line))
 
 (define-structure ring-buffer ring-buffer-interface
-  (open scheme srfi-9 define-record-types)
+  (open scheme srfi-9 define-record-types let-opt)
   (files ring-buffer))
 
 (define-structure terminal-mode terminal-mode-interface
