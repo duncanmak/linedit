@@ -65,14 +65,6 @@
                        (list->string (line:right l)))
         "")))
 
-(define (line->port l)
-  (let ((s (line->string l)))
-    (open-input-string
-     (if (and (= 1 (string-length s))
-              (eof-object? (string-ref s 0)))
-         ""
-         s))))
-
 (define (string->line s)
   (if (not (string-contains s "^"))
       (make-line (reverse (string->list s)))
@@ -122,7 +114,7 @@
                (with-handler (lambda (c next)
                                (k (lambda ()
                                     (if (interrupt? c)
-                                        (car (condition-stuff c))
+                                        (line->string (car (condition-stuff c)))
                                         (next)))))
                  (lambda ()
                    (loop (process ch l)

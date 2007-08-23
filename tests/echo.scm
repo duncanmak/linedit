@@ -1,6 +1,8 @@
 (define-structure echo (export echo)
-  (open scheme linedit)
+  (open formats scheme linedit)
   (begin
     (define (echo)
-     (let ((line (readline "Say what? ")))
-       line))))
+      (let loop ((input (readline "Say what? ")))
+        (if (string=? "bye" input)
+            (format #t "ciao!~%")
+            (loop (readline "Again? ")))))))

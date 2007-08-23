@@ -20,7 +20,6 @@
           line:right
           line:column
           line:length
-          line->port
           line->string
           string->line
           get-char
