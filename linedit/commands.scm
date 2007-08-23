@@ -27,6 +27,8 @@
 
 (define (show-newline l . k)
   (newline)
+  (if (not (null? *command-history*))
+      (add-history (line->string l)))
   (signal 'interrupt l))
 
 (define (insert-char l k)
@@ -94,3 +96,16 @@
 
 (define (backward-kill-word l . k)
   (move-word l line:left delete-backward-char))
+
+(define (history-prev-input l . k)
+  (let ((last (get-history)))
+    (if (not (null? last))
+        (begin (clear-line l)
+               (display last)
+               (copy-line l (reverse (string->list last))))
+        l)))
+
+(define (clear-line l)
+    (tputs (column-address (+ (line:column l) (line:length l))))
+    (tputs (clr-eol)))
+

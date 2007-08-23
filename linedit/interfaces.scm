@@ -11,7 +11,17 @@
           backward-word
           forward-char
           forward-word
+          history-prev-input
           kill-line))
+
+(define-interface history-interface
+  (export *command-history*
+          add-history
+          initialize-history
+          get-history
+          max-history
+          keep-duplicates
+          keep-blanks))
 
 (define-interface line-interface
   (export make-empty-line
@@ -51,11 +61,19 @@
           set-input-terminal-mode))
 
 (define-interface helpers-interface
-    (export 1+ 1- print-table sane tputs))
+  (export 1+ 1- print-table sane tputs))
 
+(define-interface ring-buffer-interface
+  (export make-ring-buffer
+          ring-buffer:add
+          ring-buffer:get
+          ring-buffer:length
+          ring-buffer:peek))
 
 (define-interface linedit-interface
-  (export readline
-          initialize-keymap
-          define-key
-          global-keymap))
+  (compound-interface
+   history-interface
+   (export readline
+           initialize-keymap
+           define-key
+           global-keymap)))
