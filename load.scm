@@ -17,12 +17,12 @@
 (config '(load "=terminfo/packages.scm"
                "=linedit/interfaces.scm"
                "=linedit/packages.scm"
-               "=tests/repl.scm"))
+               "=tests/repl.scm"
+               "=tests/showkeys.scm"
+               "=tests/echo.scm"))
 
-(open 'terminfo)
-(open 'linedit)
+(open 'echo)
+(open 'showkeys)
 (open 'repl)
 
-;;; Misc
-(load "=tests/showkeys.scm"
-      "=tests/echo.scm")
+
