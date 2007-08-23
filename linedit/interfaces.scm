@@ -54,10 +54,9 @@
 (define-interface helpers-interface
     (export 1+ 1- print-table sane tputs))
 
+
 (define-interface linedit-interface
-  (compound-interface commands-interface
-                      line-interface
-                      keystroke-interface
-                      keymap-interface
-                      helpers-interface
-                      terminal-mode-interface))
+  (export readline
+          initialize-keymap
+          define-key
+          global-keymap))

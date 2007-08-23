@@ -28,5 +28,5 @@
   (files terminal-mode))
 
 (define-structure linedit linedit-interface
-  (open scheme-with-scsh commands helpers line keymap keystroke terminal-mode tables terminfo)
+  (open scheme commands line keymap)
   (files startup))
