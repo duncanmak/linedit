@@ -49,11 +49,11 @@
              (shift-right l))))
 
 (define (move-beginning-of-line l . k)
-  (tputs (column-address 0))
+  (tputs (column-address (line:column l)))
   (beginning-of-line l))
 
 (define (move-end-of-line l . k)
-  (tputs (column-address (+ 1 (line-length l))))
+  (tputs (column-address (+ (line:column l) (line-length l))))
   (end-of-line l))
 
 (define (backward-char l . k)
@@ -70,7 +70,7 @@
 
 (define (kill-line l . k)
   (tputs (clr-eol))
-  (make-line (line:left l) '()))
+  (copy-line l (line:left l) '()))
 
 (define (move-word l direction action)
   (let loop ((line l)

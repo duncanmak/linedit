@@ -7,7 +7,7 @@
       (set! continue #f))
 
     (define (evaluate env)
-      (let* ((line  (process-line (make-line)))
+      (let* ((line  (readline ">> "))
              (input (line->port line))
              (value (eval (read input) env)))
         (display value)

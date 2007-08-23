@@ -1,8 +1,0 @@
-(define (saywhat)
-  (display "Say what? ")
-  (newline)
-  (let ((line (process-line (make-line))))
-    (newline)
-    (display (line->string line))
-    (newline)
-    line))

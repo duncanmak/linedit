@@ -25,5 +25,4 @@
 
 ;;; Misc
 (load "=tests/showkeys.scm"
-      "=tests/saywhat.scm")
-
+      "=tests/echo.scm")

@@ -14,9 +14,11 @@
           kill-line))
 
 (define-interface line-interface
-  (export make-line
+  (export make-empty-line
+          copy-line
           line:left
           line:right
+          line:column
           line->port
           line->string
           string->line
@@ -28,12 +30,13 @@
           line-length
           line-insert
           line?
-          process-line))
+          readline))
 
 (define-interface keystroke-interface
   (export key
           control
           meta
+          make-key
           keystroke-hash
           keystroke?))
 
