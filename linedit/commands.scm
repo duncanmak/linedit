@@ -106,6 +106,6 @@
         l)))
 
 (define (clear-line l)
-    (tputs (column-address (+ (line:column l) (line:length l))))
+    (tputs (column-address (line:column l)))
     (tputs (clr-eol)))
 
