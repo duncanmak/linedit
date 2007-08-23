@@ -15,13 +15,16 @@
 ;;;
 ;;; To facilitate dealing with the keymap, three operations are defined:
 ;;;
-;;; DEFINE-KEY keymap key command -> assigns command to key in keymap.
+;;; DEFINE-KEY* keymap key command -> assigns command to key in keymap.
 ;;;
 ;;; LOOKUP-KEY key [keymap] -> looks up the value of key in keymap. If
 ;;; no keymap is supplied, the global-keymap is used.
 ;;;
 ;;; PROCESS key line [keymap] -> Uses LOOK-UP to find the appropriate
 ;;; Command and calls it with key and line.
+;;;
+;;; DEFINE-KEY is a macro over DEFINE-KEY*, so that keystroke
+;;; description forms do not need to be explicitly quoted and parsed.
 ;;;
 
 (define global-keymap (make-integer-table))
@@ -46,7 +49,12 @@
        ((table?     value) (process (read-char) line value))
        (else line)))))
 
-(define (define-key keymap k v)
+(define-syntax define-key
+  (syntax-rules ()
+    ((_ keymap key-form value)
+     (define-key* keymap (parse-key (quote key-form)) value))))
+
+(define (define-key* keymap k v)
   (cond
    ((not (table? keymap))
     (error "keymap is invalid" keymap))

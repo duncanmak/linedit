@@ -33,15 +33,13 @@
           readline))
 
 (define-interface keystroke-interface
-  (export key
-          control
-          meta
-          make-key
+  (export parse-key
           keystroke-hash
           keystroke?))
 
 (define-interface keymap-interface
-  (export define-key
+  (export ((define-key) :syntax)
+          define-key*
           lookup-key
           global-keymap
           process))

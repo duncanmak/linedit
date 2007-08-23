@@ -9,15 +9,18 @@
 ;;;
 ;;; The KEYSTROKE record represents a single keyboard input event.
 ;;;
-;;; There are 3 ways to construct a keystroke:
+;;; Keystrokes are described in an s-expression form:
 ;;;
-;;; For single character input, use the KEY: (key #\a)
-;;; For keystrokes that involve the control key, use CONTROL: (control #\a)
-;;; For keystrokes that involve the meta key: use META (meta #\a)
+;;; For single character input: (key #\a) or #\a
+;;; For keystrokes that involve the control key: (control #\a)
+;;; For keystrokes that involve the meta key: (meta #\a)
 ;;;
 ;;; Additionally, the follow symbols are recognized:
 ;;;
 ;;;  escape, return, backspace, left, right, up, down
+;;;
+;;; To create a KEYSTROKE structure, use PARSE-KEY to read in an
+;;; s-expression describing the keystroke.
 ;;;
 
 (define-record-type keystroke
@@ -28,30 +31,18 @@
 
 (define-record-discloser keystroke
   (lambda (k)
-    `(Keystroke ,(keystroke->string k) ,(keystroke-hash k) )))
+    `(Keystroke ,(keystroke->sexpr k) ,(keystroke-hash k) )))
 
-(define (key value)
-  (cond
-   ((symbol? value) (%make-keystroke (resolve-symbol value) #f))
-   ((char? value) (%make-keystroke value #f))
-   ((keystroke? value)  value)
-   (else (error "input is invalid: " value))))
-
-(define (control value)
-  (cond
-   ((symbol? value) (%make-keystroke (resolve-symbol value) #f))
-   ((char? value)
-    (%make-keystroke (control-character value) #f))
-   ((keystroke? value)
-    (%make-keystroke (control-character (char-value value)) (meta? value)))
-   (else (error "input is invalid: " value))))
-
-(define (meta value)
-  (cond
-   ((symbol? value) (%make-keystroke (resolve-symbol value) #t))
-   ((char? value) (%make-keystroke value #t))
-   ((keystroke? value)  (%make-keystroke (char-value value) #t))
-   (else (error "input is invalid: " value))))
+(define (parse-key form)
+  (if (list? form)
+      (let ((tag (car  form))
+            (val (cadr form)))
+        (case tag
+          ((control) (%control  (parse-key val)))
+          ((meta)    (%meta     (parse-key val)))
+          ((key)     (%key     val))
+          (else      (error "This is not a valid key form " tag))))
+      (%key form)))
 
 (define (keystroke-hash k)
   (cond
@@ -62,24 +53,48 @@
    ((list? (char-value k)) (char-value k))
    (else (char->ascii (char-value k)))))
 
-
 ;;; PRIVATE
 
-(define (keystroke->string k)
-  (if (not (keystroke? k))
-      (error "this is not a keystroke" k)
-      (string-append
-       (if (control? k) "C-" "")
-       (if (meta?    k) "M-" "")
-       (print (char-value k)))))
-
-(define (print v)
+(define (%key value)
   (cond
-   ((special-name? v) => symbol->string)
-   ((char-iso-control? v)
-    (string (ascii->char (+ (char->ascii v)
-                            (- (char->ascii #\A) 1)))))
-   (else (string v))))
+   ((symbol? value) (%make-keystroke (resolve-symbol value) #f))
+   ((char? value) (%make-keystroke value #f))
+   ((keystroke? value)  value)
+   (else (error "input is invalid: " value))))
+
+(define (%control value)
+  (cond
+   ((symbol? value) (%make-keystroke (resolve-symbol value) #f))
+   ((char? value)
+    (%make-keystroke (control-character value) #f))
+   ((keystroke? value)
+    (%make-keystroke (control-character (char-value value)) (meta? value)))
+   (else (error "input is invalid: " value))))
+
+(define (%meta value)
+  (cond
+   ((symbol? value)     (%make-keystroke (resolve-symbol value) #t))
+   ((char? value)       (%make-keystroke value #t))
+   ((keystroke? value)  (%make-keystroke (char-value value) #t))
+   (else (error "input is invalid: " value))))
+
+(define (keystroke->sexpr k)
+  (let ((result (list (print k))))
+    (cond
+     ((and (meta? k) (control? k))
+      (cons 'control (cons 'meta result)))
+     ((meta?    k)   (cons 'meta    result))
+     ((control? k)   (cons 'control result))
+     (else           (cons 'key     result)))))
+
+(define (print k)
+  (let ((v (char-value k)))
+    (cond
+     ((special-name? v) => (lambda (s) s))
+     ((char-iso-control? v)
+      (ascii->char (+ (char->ascii v)
+                      (- (char->ascii #\A) 1))))
+     (else v))))
 
 (define (control? k)
   (and (keystroke? k) (char-iso-control? (char-value k))))
@@ -88,7 +103,6 @@
   (define (char-minus c1 c2)
     (ascii->char (+ 1 (- (char->ascii c1) (char->ascii c2)))))
   (cond
-   ((not (char? c)) (error "this is not a character "c ))
    ((char-iso-control? c) c)
    ((char-upper-case? c) (char-minus c #\A))
    ((char-lower-case? c) (char-minus c #\a))
@@ -116,11 +130,17 @@
 
 (define (special-name? v)
   (cond
-   ((eq? v (ascii->char 27))  'escape)
-   ((eq? v (ascii->char 13))  'return)
-   ((eq? v (ascii->char 127)) 'backspace)
-   ((eq? v (key-left))        'left)
-   ((eq? v (key-right))       'right)
-   ((eq? v (key-up))          'up)
-   ((eq? v (key-down))        'down)
+   ((char? v)
+    (cond
+     ((eq? v (ascii->char 27))  'escape)
+     ((eq? v (ascii->char 13))  'return)
+     ((eq? v (ascii->char 127)) 'backspace)
+     (else #f)))
+   ((list? v)
+    (cond
+     ((eq? v (key-left))  'left)
+     ((eq? v (key-right)) 'right)
+     ((eq? v (key-up))    'up)
+     ((eq? v (key-down))  'down)
+     (else #f)))
    (else #f)))
