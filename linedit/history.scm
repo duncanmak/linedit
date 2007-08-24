@@ -6,16 +6,32 @@
 ;;; disclaimed.
 
 (define max-history 100)
+(define max-undo    100)
+
 (define keep-duplicates #f)
 (define keep-blanks #t)
 
-(define *command-history* '())
+(define-record-type history
+  (%make-history %line %edit)
+  session?
+  (%line history:line)
+  (%edit history:edit))
 
-(define (initialize-history)
-  (set! *command-history* (make-ring-buffer max-history)))
+(define-record-discloser history
+  (lambda (h)
+    `(History ,(history:line h) ,(history:edit h))))
 
-(define (add-history s)
-  (let* ((h *command-history*)
+(define (make-history . args)
+  (let-optionals args ((hist (make-ring-buffer max-history))
+                       (undo (make-ring-buffer max-undo)))
+    (%make-history hist undo)))
+
+(define (empty-history)
+  (%make-history (make-ring-buffer 0)
+                 (make-ring-buffer 0)))
+
+(define (add-line-history history s)
+  (let* ((h (history:line history))
          (i (ring-buffer:peek h)))
     (cond
      ((and (string-null? s)
@@ -25,6 +41,12 @@
            (not keep-duplicates)) '())
      (else (ring-buffer:add h s)))))
 
-(define (get-history)
-  (let* ((h *command-history*))
-    (ring-buffer:get h)))
+(define (retrieve h accessor)
+  (let ((r (accessor h)))
+    (if (string? r) r '())))
+
+(define (get-line-history hist direction)
+  (case direction
+    ((next)     (retrieve (history:line hist) ring-buffer:next))
+    ((previous) (retrieve (history:line hist) ring-buffer:previous))
+    (else (error "this is not valid" direction))))

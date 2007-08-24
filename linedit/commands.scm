@@ -25,10 +25,9 @@
 ;;; argument, but preserves the command interface.
 ;;;
 
-(define (show-newline l . k)
+(define (accept-line l . k)
   (newline)
-  (if (not (null? *command-history*))
-      (add-history (line->string l)))
+  (add-line-history (line:history l) (line->string l))
   (signal 'interrupt l))
 
 (define (insert-char l k)
@@ -97,15 +96,20 @@
 (define (backward-kill-word l . k)
   (move-word l line:left delete-backward-char))
 
+(define (history-next-input l . k)
+  (let* ((h    (line:history l))
+         (hist (get-line-history h 'next)))
+    (replace-line l (if (null? hist) "" hist))))
+
 (define (history-prev-input l . k)
-  (let ((last (get-history)))
-    (if (not (null? last))
-        (begin (clear-line l)
-               (display last)
-               (copy-line l (reverse (string->list last))))
+  (let* ((h    (line:history l))
+         (hist (get-line-history h 'previous)))
+    (if (not (null? hist))
+        (replace-line l hist)
         l)))
 
-(define (clear-line l)
-    (tputs (column-address (line:column l)))
-    (tputs (clr-eol)))
-
+(define (replace-line l hist)
+  (tputs (column-address (line:column l))
+         (clr-eol)
+         hist)
+  (copy-line l (reverse (string->list hist))))

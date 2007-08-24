@@ -33,11 +33,12 @@
 ;;;
 
 (define-record-type line
-  (make-line left right col)
+  (make-line left right col history)
   line?
-  (left  line:left)
-  (right line:right)
-  (col   line:column))
+  (left    line:left)
+  (right   line:right)
+  (col     line:column)
+  (history line:history))
 
 (define-record-discloser line
   (lambda (l)
@@ -48,14 +49,16 @@
      (length (line:right l))))
 
 (define (make-empty-line . args)
-  (let-optionals args ((prompt-string ""))
-    (make-line '() '() (+ 1 (string-length prompt-string)))))
+  (let-optionals args ((prompt  "")
+                       (history (empty-history)))
+    (make-line '() '() (+ 1 (string-length prompt)) history)))
 
 (define (copy-line l . args)
-  (let-optionals args ((left  (line:left   l))
-                       (right (line:right  l))
-                       (col   (line:column l)))
-    (make-line left right col)))
+  (let-optionals args ((left    (line:left   l))
+                       (right   (line:right  l))
+                       (col     (line:column l))
+                       (history (line:history l)))
+    (make-line left right col history)))
 
 (define (line->string l . flag)
   (let-optionals flag ((show-cursor #f))
@@ -67,14 +70,14 @@
 
 (define (string->line s)
   (if (not (string-contains s "^"))
-      (make-line (reverse (string->list s)) '() 0)
+      (make-line (reverse (string->list s)) '() 0 '())
       (let* ((split (infix-splitter "^"))
              (line  (split s))
              (left  (car  line))
              (right (cadr line)))
         (make-line (reverse (string->list left))
                    (string->list right)
-                   0))))
+                   0 '()))))
 
 (define (get-char l direction)
   (if (null? (direction l))
@@ -102,21 +105,3 @@
   (copy-line l (append (reverse (line:right l))
                      (line:left l))
              '()))
-
-(define (readline . args)
-  (let-optionals args ((prompt-string ""))
-    (display prompt-string)
-    (with-current-input-terminal-mode 'raw
-      (let loop ((l  (make-empty-line prompt-string))
-                 (ch (read-char)))
-        ((call-with-current-continuation
-           (lambda (k)
-             (lambda ()
-               (with-handler (lambda (c next)
-                               (k (lambda ()
-                                    (if (interrupt? c)
-                                        (line->string (car (condition-stuff c)))
-                                        (next)))))
-                 (lambda ()
-                   (loop (process ch l)
-                         (read-char))))))))))))

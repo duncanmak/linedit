@@ -12,13 +12,15 @@
           forward-char
           forward-word
           history-prev-input
+          accept-line
           kill-line))
 
 (define-interface history-interface
-  (export *command-history*
-          add-history
-          initialize-history
-          get-history
+  (export add-line-history
+          get-line-history
+          history:line
+          make-history
+          empty-history
           max-history
           keep-duplicates
           keep-blanks))
@@ -30,6 +32,7 @@
           line:right
           line:column
           line:length
+          line:history
           line->string
           string->line
           get-char
@@ -38,8 +41,7 @@
           beginning-of-line
           end-of-line
           line-insert
-          line?
-          readline))
+          line?))
 
 (define-interface keystroke-interface
   (export parse-key
@@ -65,15 +67,18 @@
 
 (define-interface ring-buffer-interface
   (export make-ring-buffer
+          ring-buffer?
+          ring-buffer:empty?
           ring-buffer:add
-          ring-buffer:get
           ring-buffer:length
+          ring-buffer:next
+          ring-buffer:previous
           ring-buffer:peek))
 
 (define-interface linedit-interface
-  (compound-interface
-   history-interface
-   (export readline
-           initialize-keymap
-           define-key
-           global-keymap)))
+  (export readline
+          new-history
+          disable-history
+          initialize-keymap
+          define-key
+          global-keymap))
