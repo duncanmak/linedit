@@ -80,7 +80,7 @@
       (cond
        ((null? c) line)
        ((char-letter? c) (loop (action line) #f))
-       ((and (char-whitespace? c) skip-space)
+       ((and (not (char-alphabetic? c)) skip-space)
         (loop (action line) #t))
        (else line)))))
 
