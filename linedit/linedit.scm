@@ -4,20 +4,17 @@
   (let-optionals args ((prompt  "")
                        (history (disable-history)))
     (display prompt)
-    (with-current-input-terminal-mode 'raw
-      (let loop ((l  (make-empty-line prompt history))
-                 (ch (read-char)))
-        ((call-with-current-continuation
-           (lambda (k)
-             (lambda ()
-               (with-handler (lambda (c next)
-                               (k (lambda ()
-                                    (if (interrupt? c)
-                                        (line->string (car (condition-stuff c)))
-                                        (next)))))
-                 (lambda ()
-                   (loop (process ch l)
-                         (read-char))))))))))))
+    (call-with-current-continuation
+      (lambda (return)
+        (with-current-input-terminal-mode 'raw
+          (let loop ((l (make-empty-line prompt history)))
+            (loop
+             (with-handler (lambda (c next)
+                             (if (interrupt? c)
+                                 (return (line->string (car (condition-stuff c))))
+                                 (next)))
+               (lambda ()
+                 (loop (process (read-char) l)))))))))))
 
 (define new-history  make-history)
 
