@@ -35,19 +35,20 @@
   (let* ((current (cursor buffer))
          (vec     (items buffer))
          (length  (vector-length vec)))
-    (if (zero? length)
-        '()
-        (let loop ((i        0)
-                   (results  '())
-                   (ellipsis #t))
-          (cond ((>= i length) (reverse results))
-                ((= i current)
-                 (loop (+ 1 i) (cons (list (vector-ref vec i)) results) ellipsis))
-                (else
-                 (let ((item (vector-ref vec i)))
-                   (if (eq? item (unspecific))
-                       (loop (+ 1 i) (if ellipsis (cons '... results) results) #f)
-                       (loop (+ 1 i) (cons item results) ellipsis)))))))))
+    (let loop ((i        0)
+               (results  '())
+               (ellipsis #t))
+      (cond
+       ((zero? length) '())
+       ((>= i length) (reverse results))
+       (else
+        (let ((item (vector-ref vec i)))
+          (cond
+           ((= i current)
+            (loop (+ 1 i) (cons (list item) results) ellipsis))
+           ((eq? item (unspecific))
+            (loop (+ 1 i) (if ellipsis (cons '... results) results) #f))
+           (else (loop (+ 1 i) (cons item results) ellipsis)))))))))
 
 (define (increment buffer accessor)
   (let ((current (+ (accessor buffer) 1))
