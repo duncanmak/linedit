@@ -11,7 +11,7 @@
   (files utilities))
 
 (define-structure history history-interface
-  (open scheme let-opt srfi-9 srfi-13 define-record-types methods ring-buffer signals)
+  (open scheme let-opt srfi-9 srfi-13 define-record-types ring-buffer signals terminfo util)
   (files history))
 
 (define-structure keymap keymap-interface

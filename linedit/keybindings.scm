@@ -21,6 +21,11 @@
   (define-key global-keymap (control #\n) history-next-input)
   (define-key global-keymap (control #\p) history-prev-input)
 
+  (define-key global-keymap (control #\_) undo)
+  (define-key global-keymap (meta    #\_) redo)
+
+  (define-key global-keymap (control #\l) display-line)
+
   (let-optionals args ((keymaps (list global-keymap)))
     (for-each
      (lambda (keymap)

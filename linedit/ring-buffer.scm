@@ -70,6 +70,10 @@
     (set-index!  buffer i)
     (set-cursor! buffer i)))
 
+(define (ring-buffer:reset! buffer)
+  (set-index! buffer 0)
+  (set-cursor! buffer 0))
+
 (define (ring-buffer:empty? buffer)
   (zero? (vector-length (items buffer))))
 

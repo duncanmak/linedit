@@ -22,13 +22,12 @@
     `(History ,(history:line h) ,(history:edit h))))
 
 (define (make-history . args)
-  (let-optionals args ((hist (make-ring-buffer max-history))
-                       (undo (make-ring-buffer max-undo)))
-    (%make-history hist undo)))
+  (let-optionals args ((hist max-history)
+                       (undo max-undo))
+    (%make-history (make-ring-buffer hist)
+                   (make-ring-buffer undo))))
 
-(define (empty-history)
-  (%make-history (make-ring-buffer 0)
-                 (make-ring-buffer 0)))
+(define (empty-history) (make-history 0 0))
 
 (define (add-line-history history s)
   (let* ((h (history:line history))
@@ -41,12 +40,24 @@
            (not keep-duplicates)) '())
      (else (ring-buffer:add h s)))))
 
+(define (add-edit-history history l)
+  (ring-buffer:add (history:edit history) l))
+
 (define (retrieve h accessor)
   (let ((r (accessor h)))
-    (if (string? r) r '())))
+    (if (eq? r (unspecific)) '() r)))
 
 (define (get-line-history hist direction)
   (case direction
     ((next)     (retrieve (history:line hist) ring-buffer:next))
     ((previous) (retrieve (history:line hist) ring-buffer:previous))
     (else (error "this is not valid" direction))))
+
+(define (get-edit-history hist direction)
+  (case direction
+    ((next)     (retrieve (history:edit hist) ring-buffer:next))
+    ((previous) (retrieve (history:edit hist) ring-buffer:previous))
+    (else (error "this is not valid" direction))))
+
+(define (reset-edit-history hist)
+  (ring-buffer:reset! (history:edit hist)))

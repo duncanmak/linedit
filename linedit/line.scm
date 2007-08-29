@@ -10,8 +10,8 @@
 ;;; The 'line' record implements a gap buffer. It is the workhorse and
 ;;; main data structure of linedit. It contains two fields: left and
 ;;; right. Data to the left of the gap are in reverse order, data to
-;;; the right of the gap is in normal order. There is also a 'column'
-;;; field for tracking where the starting column show be.
+;;; the right of the gap is in normal order. There is also a 'prompt'
+;;; field for tracking the current prompt.
 ;;;
 ;;; To make a new line, use
 ;;;
@@ -33,32 +33,40 @@
 ;;;
 
 (define-record-type line
-  (make-line left right col history)
+  (make-line left right prompt history)
   line?
   (left    line:left)
   (right   line:right)
-  (col     line:column)
+  (prompt  line:prompt)
   (history line:history))
 
 (define-record-discloser line
   (lambda (l)
     `(Line ,(line->string l #t))))
 
+(define (line:column l)
+  (+ 1 (string-length (line:prompt l))))
+
 (define (line:length l)
   (+ (length (line:left  l))
      (length (line:right l))))
 
+(define (line:cursor l)
+  (+ (line:column l)
+     (length (line:left l))))
+
 (define (make-empty-line . args)
   (let-optionals args ((prompt  "")
                        (history (empty-history)))
-    (make-line '() '() (+ 1 (string-length prompt)) history)))
+    (make-line '() '() prompt history)))
 
 (define (copy-line l . args)
   (let-optionals args ((left    (line:left   l))
                        (right   (line:right  l))
-                       (col     (line:column l))
+                       (prompt  (line:prompt l))
                        (history (line:history l)))
-    (make-line left right col history)))
+    (add-edit-history history l)
+    (make-line left right prompt history)))
 
 (define (line->string l . flag)
   (let-optionals flag ((show-cursor #f))

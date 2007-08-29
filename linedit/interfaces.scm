@@ -11,17 +11,26 @@
           backward-word
           forward-char
           forward-word
+          history-next-input
           history-prev-input
+          undo redo
           accept-line
-          kill-line))
+          kill-line
+          clear-line
+          display-line))
 
 (define-interface history-interface
-  (export add-line-history
-          get-line-history
+  (export add-edit-history
+          add-line-history
+          history:edit
           history:line
+          get-edit-history
+          get-line-history
+          reset-edit-history
           make-history
           empty-history
           max-history
+          max-undo
           keep-duplicates
           keep-blanks))
 
@@ -31,8 +40,10 @@
           line:left
           line:right
           line:column
+          line:cursor
           line:length
           line:history
+          line:prompt
           line->string
           string->line
           get-char
@@ -73,7 +84,8 @@
           ring-buffer:length
           ring-buffer:next
           ring-buffer:previous
-          ring-buffer:peek))
+          ring-buffer:peek
+          ring-buffer:reset!))
 
 (define-interface linedit-interface
   (export readline
