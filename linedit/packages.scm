@@ -1,7 +1,8 @@
 ;;; -*- Mode: Scheme; scheme48-package: (config) -*-
 
 (define-structure commands commands-interface
-  (open scheme ascii char-predicates-lib formats srfi-13 srfi-14  conditions helpers history let-opt line keystroke keymap
+  (open scheme ascii char-predicates-lib formats srfi-13 srfi-14 conditions
+        helpers history let-opt line keystroke keymap
         (modify terminfo (rename (tputs ti:tputs))) signals tables)
   (files commands keybindings))
 
@@ -11,7 +12,8 @@
   (files utilities))
 
 (define-structure history history-interface
-  (open scheme let-opt srfi-9 srfi-13 define-record-types ring-buffer signals terminfo util)
+  (open scheme let-opt srfi-9 srfi-13 define-record-types ring-buffer signals
+        terminfo util)
   (files history))
 
 (define-structure keymap keymap-interface
@@ -19,12 +21,13 @@
   (files keymap))
 
 (define-structure keystroke keystroke-interface
-  (open scheme ascii char-predicates-lib srfi-6 srfi-9 srfi-13 define-record-types error-package table terminfo)
+  (open scheme ascii char-predicates-lib srfi-6 srfi-9 srfi-13
+        define-record-types error-package table terminfo)
   (files keystroke))
 
 (define-structure line line-interface
-  (open scheme srfi-6 srfi-9 srfi-13
-        define-record-types field-reader-package history let-opt keymap keystroke)
+  (open scheme srfi-6 srfi-9 srfi-13 define-record-types field-reader-package
+        history let-opt keymap keystroke)
   (files line))
 
 (define-structure ring-buffer ring-buffer-interface
@@ -36,5 +39,6 @@
   (files terminal-mode))
 
 (define-structure linedit linedit-interface
-  (open scheme conditions commands handle history let-opt line keymap scsh-level-0 srfi-13 terminal-mode)
+  (open scheme conditions commands handle helpers history let-opt line keymap
+        scsh-level-0 srfi-13 terminal-mode terminfo)
   (files linedit startup))

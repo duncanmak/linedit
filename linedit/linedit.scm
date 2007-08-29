@@ -12,10 +12,12 @@
               (let loop ((l (make-empty-line prompt history)))
                 (loop
                  (with-handler (lambda (c next)
+                                 (tputs (keypad-local))
                                  (if (interrupt? c)
                                      (return (line->string (car (condition-stuff c))))
                                      (next)))
                    (lambda ()
+                     (tputs (keypad-xmit))
                      (loop (process (read-char) l))))))))))))
 
 (define new-history  make-history)
