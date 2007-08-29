@@ -2,8 +2,8 @@
 
 (define (readline . args)
   (let-optionals args ((prompt     "")
-                       (input-port (current-input-port))
-                       (history    (disable-history)))
+                       (history    (disable-history))
+                       (input-port (current-input-port)))
     (if (not (string-null? prompt)) (display prompt))
     (call-with-current-continuation
       (lambda (return)
@@ -15,7 +15,7 @@
                                  (return (line->string (car (condition-stuff c))))
                                  (next)))
                (lambda ()
-                 (loop (process (read-char input-port) l)))))))))))
+                 (loop (process (read-char input-port) l input-port)))))))))))
 
 (define new-history  make-history)
 
