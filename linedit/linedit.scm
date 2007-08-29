@@ -7,16 +7,16 @@
     (if (not (string-null? prompt)) (display prompt))
     (call-with-current-continuation
       (lambda (return)
-        (with-input-terminal-mode input-port 'raw
-          (let loop ((l (make-empty-line prompt history)))
-            (loop
-             (with-handler (lambda (c next)
-                             (if (interrupt? c)
-                                 (return (line->string (car (condition-stuff c))))
-                                 (next)))
-               (lambda ()
-                 (loop (process (read-char input-port) l input-port)))))))))))
+        (with-current-input-port input-port
+            (with-current-input-terminal-mode 'raw
+              (let loop ((l (make-empty-line prompt history)))
+                (loop
+                 (with-handler (lambda (c next)
+                                 (if (interrupt? c)
+                                     (return (line->string (car (condition-stuff c))))
+                                     (next)))
+                   (lambda ()
+                     (loop (process (read-char) l))))))))))))
 
 (define new-history  make-history)
-
 (define disable-history empty-history)
