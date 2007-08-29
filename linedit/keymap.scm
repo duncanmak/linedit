@@ -42,11 +42,12 @@
                 (error "this is not a valid key sequence" key))))))))
 
 (define (process key line . args)
-  (let-optionals args ((keymap global-keymap))
+  (let-optionals args ((input  (current-input-port))
+                       (keymap global-keymap))
     (let ((value (lookup-key (char->ascii key) keymap)))
       (cond
        ((procedure? value) (value line key))
-       ((table?     value) (process (read-char) line value))
+       ((table?     value) (process (read-char input) line value))
        (else line)))))
 
 (define-syntax define-key
