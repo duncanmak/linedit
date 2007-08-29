@@ -36,5 +36,5 @@
   (files terminal-mode))
 
 (define-structure linedit linedit-interface
-  (open scheme conditions commands handle history let-opt line keymap terminal-mode)
+  (open scheme conditions commands handle history let-opt line keymap srfi-13 terminal-mode)
   (files linedit startup))
