@@ -14,7 +14,8 @@
   (translate "=linedit/"  (string-append source-directory "/linedit/"))
   (translate "=tests/"    (string-append source-directory "/tests/")))
 
-(config '(load "=terminfo/packages.scm"
+(config '(load "=terminfo/interfaces.scm"
+               "=terminfo/scsh-packages.scm"
                "=linedit/interfaces.scm"
                "=linedit/packages.scm"
                "=tests/repl.scm"
